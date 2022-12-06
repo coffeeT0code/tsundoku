@@ -4,8 +4,10 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.example.tsundoku.DatabaseHandler.DataConfig.id
 
 class DatabaseHandler(context: Context): SQLiteOpenHelper(context, dbName, null, 1) {
+
     companion object DataConfig {
         private const val dbName:String = "enterBook"
         private const val tableName = "books"
@@ -16,8 +18,6 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context, dbName, null,
         private const val authorSize = "100"
         private const val notes = "notes"
         private const val notesSize = "500"
-
-        val allBooks: MutableList<String> = mutableListOf()
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -34,26 +34,74 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context, dbName, null,
         onCreate(db)
     }
 
-    fun insertBook(bookTitle: String, bookAuthor: String, bookNotes: String) {
-        val db = this.writableDatabase
-        val ctv = ContentValues()
-        ctv.put("title", bookTitle)
-        ctv.put("author", bookAuthor)
-        ctv.put("notes", bookNotes)
-        db.insert(tableName, null, ctv)
-    }
+//    fun listBooks(): MutableList<Books> {
+//        val sql = "SELECT * FROM $tableName"
+//        val db = this.readableDatabase
+//        val storeBooks = ArrayList<Books>()
+//        val cursor = db.rawQuery(sql, null)
+//
+//        if (cursor.moveToFirst()) {
+//            do {
+//                val id = cursor.getString(0).toInt()
+//                val bookTitle = cursor.getString(1)
+//                val bookAuthor = cursor.getString(2)
+//                val bookNotes = cursor.getString(3)
+//                storeBooks.add(Books(id, bookTitle, bookAuthor, bookNotes))
+//            }
+//            while (cursor.moveToNext())
+//
+//        }
+//        cursor.close()
+//        return storeBooks
+//    }
 
-    fun getAllBooks(): MutableList<String> {
+    // get list of all notes
+    fun getAllBooks(): List<Books>  {
         val db = this.readableDatabase
-        val cursor = db.rawQuery("SELECT * FROM $tableName", null)
+        val allBooks = mutableListOf<Books>()
 
-        while (cursor.moveToNext()) {
-            val index = cursor.getColumnIndex("title")
-            if (index >= 0)
-                allBooks.add(cursor.getString(index))
+        // get all entries from table and put it into the list
+        db.rawQuery("SELECT * FROM $tableName",null).use {
+            while(it.moveToNext()){
+                allBooks.add(
+                    Books(
+                        id = it.getInt(it.getColumnIndex(DataConfig.id) as Int),
+                        title = it.getString(it.getColumnIndex(DataConfig.title) as Int),
+                        author = it.getString(it.getColumnIndex(DataConfig.author) as Int),
+                        notes = it.getString(it.getColumnIndex(DataConfig.notes) as Int)
+                    )
+                )
+            }
         }
         return allBooks
     }
 
+    fun addBooks(title: String, author: String, notes: String) {
+        val db = this.writableDatabase
+        val ctv = ContentValues()
+        ctv.put("title", title)
+        ctv.put("author", author)
+        ctv.put("notes", notes)
+        db.insert(tableName, null, ctv)
+    }
+
+    fun updateBooks(books: Books) {
+        val db = this.writableDatabase
+        val ctv = ContentValues()
+        ctv.put("title", books.title)
+        ctv.put("author", books.author)
+        ctv.put("notes", books.notes)
+        db.update(
+            tableName, ctv, "$id = ?", arrayOf(id.toString())
+        )
+    }
+
+    fun deleteBooks(id: Int) {
+        val db = this.writableDatabase
+        val ctv = ContentValues()
+        db.delete(
+            tableName,"$id = ?", arrayOf(id.toString())
+        )
+    }
 
 }
