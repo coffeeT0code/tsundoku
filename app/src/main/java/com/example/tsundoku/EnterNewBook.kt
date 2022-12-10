@@ -38,15 +38,15 @@ class EnterNewBook : AppCompatActivity() {
 //                    this@EnterNewBook,
 //                    "Something went wrong",
 //                    Toast.LENGTH_LONG
-//                ).show()
+//               ).show()
 //            }
 //            else {
-//                myDb.addBooks(bookTitle, bookAuthor, bookNotes)
+//                myDb.addBooks(title, author, notes)
 //                finish()
 //                startActivity(myIntent)
 //            }
 //        }
-
+//
 //            Toast.makeText(this@EnterNewBook, "Task cancelled",
 //            Toast.LENGTH_LONG).show()}
 }

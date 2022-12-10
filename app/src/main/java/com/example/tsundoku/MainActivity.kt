@@ -1,5 +1,6 @@
 package com.example.tsundoku
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.io.Serializable
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,9 +39,9 @@ class MainActivity : AppCompatActivity() {
                 Toast.LENGTH_LONG
             ).show()
         }
+
         val btnAdd: Button = findViewById(R.id.btnAdd)
         btnAdd.setOnClickListener { enterNewBook() }
-
     }
 
     private fun enterNewBook() {

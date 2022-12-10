@@ -23,7 +23,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="8dp"
         android:hint="Author"
-        android:inputType="phone"
+        android:inputType="text"
         android:maxLines="1"
         android:padding="12dp"
         android:textSize="12sp" />
@@ -35,7 +35,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="8dp"
         android:hint="enter your thoughts"
-        android:inputType="phone"
+        android:inputType="text"
         android:padding="12dp"
         android:textSize="12sp" />
 

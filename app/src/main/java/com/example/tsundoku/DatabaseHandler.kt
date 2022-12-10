@@ -4,14 +4,13 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.example.tsundoku.DatabaseHandler.DataConfig.id
 
 class DatabaseHandler(context: Context): SQLiteOpenHelper(context, dbName, null, 1) {
 
     companion object DataConfig {
         private const val dbName:String = "enterBook"
         private const val tableName = "books"
-        private const val id = "_id"
+        private const val idColumnName = "_id"
         private const val title = "title"
         private const val titleSize = "100"
         private const val author = "author"
@@ -23,7 +22,7 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context, dbName, null,
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL("CREATE TABLE IF NOT EXISTS " +
                 "$tableName " +
-                "($id INTEGER PRIMARY KEY, " +
+                "($idColumnName INTEGER PRIMARY KEY, " +
                 "$title VARCHAR($titleSize), " +
                 "$author VARCHAR($authorSize), " +
                 "$notes VARCHAR($notesSize));")
@@ -65,7 +64,7 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context, dbName, null,
             while(it.moveToNext()){
                 allBooks.add(
                     Books(
-                        id = it.getInt(it.getColumnIndex(DataConfig.id) as Int),
+                        id = it.getInt(it.getColumnIndex(DataConfig.idColumnName) as Int),
                         title = it.getString(it.getColumnIndex(DataConfig.title) as Int),
                         author = it.getString(it.getColumnIndex(DataConfig.author) as Int),
                         notes = it.getString(it.getColumnIndex(DataConfig.notes) as Int)
@@ -85,23 +84,21 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context, dbName, null,
         db.insert(tableName, null, ctv)
     }
 
-    fun updateBooks(books: Books) {
+    fun updateBooks(books: Int) {
         val db = this.writableDatabase
         val ctv = ContentValues()
-        ctv.put("title", books.title)
-        ctv.put("author", books.author)
-        ctv.put("notes", books.notes)
+        ctv.put("title", title)
+        ctv.put("author", author)
+        ctv.put("notes", notes)
         db.update(
-            tableName, ctv, "$id = ?", arrayOf(id.toString())
+            tableName, ctv, "$idColumnName = ?", arrayOf(idColumnName.toString())
         )
     }
 
     fun deleteBooks(id: Int) {
         val db = this.writableDatabase
-        val ctv = ContentValues()
         db.delete(
-            tableName,"$id = ?", arrayOf(id.toString())
+            tableName,"$idColumnName = ?", arrayOf(id.toString())
         )
     }
-
 }
