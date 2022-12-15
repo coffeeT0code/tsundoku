@@ -5,7 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.EditText
+import androidx.appcompat.view.menu.MenuView
 import androidx.recyclerview.widget.RecyclerView
+import java.util.Objects
 
 internal class BookAdapter (
     private val context: Context, listBooks: MutableList<Books>
@@ -32,11 +35,11 @@ internal class BookAdapter (
         val book = listBooks[position]
         holder.tvTitle.text = book.title
         holder.tvAuthor.text = book.author
-        holder.tvNotes.text = book.notes
+//        holder.tvNotes.text = book.notes
         holder.deleteBook.setOnClickListener {
             myDb.deleteBooks(book.id)
-            (context as Activity).finish()
-            context.startActivity(context.intent)
+            listBooks.removeAt(position)
+            notifyItemRemoved(position)
         }
         holder.cardView.setOnClickListener {
             val myIntent = Intent(context, ViewBook::class.java)

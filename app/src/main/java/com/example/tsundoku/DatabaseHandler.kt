@@ -17,6 +17,8 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context, dbName, null,
         private const val authorSize = "100"
         private const val notes = "notes"
         private const val notesSize = "500"
+        private const val state = "state"
+        private const val stateSize = "100"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -25,7 +27,8 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context, dbName, null,
                 "($idColumnName INTEGER PRIMARY KEY, " +
                 "$title VARCHAR($titleSize), " +
                 "$author VARCHAR($authorSize), " +
-                "$notes VARCHAR($notesSize));")
+                "$notes VARCHAR($notesSize), " +
+                "$state VARCHAR($stateSize));")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -67,7 +70,8 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context, dbName, null,
                         id = it.getInt(it.getColumnIndex(DataConfig.idColumnName) as Int),
                         title = it.getString(it.getColumnIndex(DataConfig.title) as Int),
                         author = it.getString(it.getColumnIndex(DataConfig.author) as Int),
-                        notes = it.getString(it.getColumnIndex(DataConfig.notes) as Int)
+                        notes = it.getString(it.getColumnIndex(DataConfig.notes) as Int),
+                        state = it.getString(it.getColumnIndex(DataConfig.state) as Int)
                     )
                 )
             }
@@ -75,23 +79,25 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context, dbName, null,
         return allBooks
     }
 
-    fun addBooks(title: String, author: String, notes: String) {
+    fun addBooks(title: String, author: String, notes: String, state: String) {
         val db = this.writableDatabase
         val ctv = ContentValues()
         ctv.put("title", title)
         ctv.put("author", author)
         ctv.put("notes", notes)
+        ctv.put("state", state)
         db.insert(tableName, null, ctv)
     }
 
-    fun updateBooks(books: Int) {
+    fun updateBooks(id: Int, title: String, author: String, notes: String, state: String) {
         val db = this.writableDatabase
         val ctv = ContentValues()
         ctv.put("title", title)
         ctv.put("author", author)
         ctv.put("notes", notes)
+        ctv.put("state", state)
         db.update(
-            tableName, ctv, "$idColumnName = ?", arrayOf(idColumnName.toString())
+            tableName, ctv, "$idColumnName = ?", arrayOf(id.toString())
         )
     }
 

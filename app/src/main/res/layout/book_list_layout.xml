@@ -39,17 +39,6 @@
             app:layout_constraintTop_toBottomOf="@+id/ItemBookTitle" />
 
 
-        <TextView
-            android:id="@+id/ItemBookNotes"
-            android:layout_width="220dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/ItemBookAuthor"
-            android:layout_marginTop="8dp"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ItemBookAuthor" />
-
         <ImageView
             android:id="@+id/deleteBook"
             android:layout_width="0dp"

@@ -20,12 +20,21 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         title = "Tsundoku"
+        myDb = DatabaseHandler(this)
+
+        val btnAdd: Button = findViewById(R.id.btnAdd)
+        btnAdd.setOnClickListener { enterNewBook() }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        bookList = myDb.getAllBooks().toMutableList()
+
         val bookView: RecyclerView = findViewById(R.id.myBookList)
         val linearLayoutManager = LinearLayoutManager(this)
         bookView.layoutManager = linearLayoutManager
         bookView.setHasFixedSize(true)
-        myDb = DatabaseHandler(this)
-        bookList = myDb.getAllBooks().toMutableList()
 
         if (bookList.size > 0) {
             bookView.visibility = View.VISIBLE
@@ -39,10 +48,8 @@ class MainActivity : AppCompatActivity() {
                 Toast.LENGTH_LONG
             ).show()
         }
-
-        val btnAdd: Button = findViewById(R.id.btnAdd)
-        btnAdd.setOnClickListener { enterNewBook() }
     }
+
 
     private fun enterNewBook() {
         val myIntent = Intent(this, EnterNewBook::class.java)

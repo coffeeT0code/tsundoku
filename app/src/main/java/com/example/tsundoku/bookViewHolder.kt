@@ -12,8 +12,6 @@ class BookViewHolder(view: View) : RecyclerView.ViewHolder(view){
     val cardView: CardView = itemView.findViewById(R.id.root)
     val tvTitle: TextView = itemView.findViewById(R.id.ItemBookTitle)
     val tvAuthor: TextView = itemView.findViewById(R.id.ItemBookAuthor)
-    val tvNotes: TextView = itemView.findViewById(R.id.ItemBookNotes)
     val deleteBook: ImageView = itemView.findViewById(R.id.deleteBook)
-//    val editBook: ImageView = itemView.findViewById(R.id.editBook)
 
 }
