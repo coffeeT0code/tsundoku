@@ -19,8 +19,10 @@ internal class BookAdapter (
 
     init {
         this.listBooks = listBooks
-        this.mMutableList = listBooks
+       this.mMutableList = listBooks
         myDb = DatabaseHandler(context)
+        this.setHasStableIds(true)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
@@ -51,5 +53,4 @@ internal class BookAdapter (
     override fun getItemCount(): Int {
         return listBooks.count()
     }
-
 }

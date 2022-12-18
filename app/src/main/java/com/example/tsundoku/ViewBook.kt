@@ -29,7 +29,8 @@ class ViewBook : AppCompatActivity() {
         val edit: ImageButton = findViewById(R.id.BtnEditBook)
         val save: Button = findViewById(R.id.BtnSaveEdit)
         val spinner: Spinner = findViewById(R.id.spinner)
-        val editTexts = arrayListOf(title, author, notes, spinner)
+        val ratingBar: RatingBar = findViewById(R.id.ratingBarView)
+        val editTexts = arrayListOf(title, author, notes, spinner, ratingBar)
 
         title.setText(book.title)
         author.setText(book.author)
@@ -37,6 +38,9 @@ class ViewBook : AppCompatActivity() {
         val compareValue = state.toString()
         spinner.isEnabled = false;
         spinner.isClickable = false;
+        ratingBar.rating = book.rating.toFloat()
+        ratingBar.isClickable = false
+        ratingBar.isEnabled = false
 
 // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter.createFromResource(
@@ -69,23 +73,23 @@ class ViewBook : AppCompatActivity() {
         }
 
 
-            edit.setOnClickListener() {
-                if (!editActive) {
-                    for (element in editTexts) {
-                        element.isEnabled = true
-                        element.isClickable = true
-                    }
-                    save.visibility = View.VISIBLE
-                    editActive = true
-                } else {
-                    for (element in editTexts) {
-                        element.isEnabled = false
-                        spinner.isClickable = false
-                    }
-                    save.visibility = View.INVISIBLE
-                    editActive = false
+        edit.setOnClickListener() {
+            if (!editActive) {
+                for (element in editTexts) {
+                    element.isEnabled = true
+                    element.isClickable = true
                 }
+                save.visibility = View.VISIBLE
+                editActive = true
+            } else {
+                for (element in editTexts) {
+                    element.isEnabled = false
+                    spinner.isClickable = false
+                }
+                save.visibility = View.INVISIBLE
+                editActive = false
             }
+        }
         save.setOnClickListener() {
            updateBook(it)
         }
@@ -97,8 +101,9 @@ class ViewBook : AppCompatActivity() {
         val bookTitleField = findViewById<EditText>(R.id.viewBookTitle).text.toString()
         val bookAuthorField = findViewById<EditText>(R.id.viewBookAuthor).text.toString()
         val bookNotesField = findViewById<EditText>(R.id.viewBookNotes).text.toString()
+        val ratingBar = findViewById<RatingBar>(R.id.ratingBarView).rating.toInt()
 
-        myDb.updateBooks(id, bookTitleField, bookAuthorField, bookNotesField, state)
+        myDb.updateBooks(id, bookTitleField, bookAuthorField, bookNotesField, state, ratingBar)
         startActivity(myIntent)
     }
 

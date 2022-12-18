@@ -19,6 +19,8 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context, dbName, null,
         private const val notesSize = "500"
         private const val state = "state"
         private const val stateSize = "100"
+        private const val rating = "rating"
+        private const val ratingSize = "1"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -28,7 +30,8 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context, dbName, null,
                 "$title VARCHAR($titleSize), " +
                 "$author VARCHAR($authorSize), " +
                 "$notes VARCHAR($notesSize), " +
-                "$state VARCHAR($stateSize));")
+                "$state VARCHAR($stateSize), " +
+                "$rating INT($ratingSize));")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -57,7 +60,7 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context, dbName, null,
 //        return storeBooks
 //    }
 
-    // get list of all notes
+    // get list of all books
     fun getAllBooks(): List<Books>  {
         val db = this.readableDatabase
         val allBooks = mutableListOf<Books>()
@@ -71,7 +74,8 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context, dbName, null,
                         title = it.getString(it.getColumnIndex(DataConfig.title) as Int),
                         author = it.getString(it.getColumnIndex(DataConfig.author) as Int),
                         notes = it.getString(it.getColumnIndex(DataConfig.notes) as Int),
-                        state = it.getString(it.getColumnIndex(DataConfig.state) as Int)
+                        state = it.getString(it.getColumnIndex(DataConfig.state) as Int),
+                        rating = it.getInt(it.getColumnIndex(DataConfig.rating) as Int)
                     )
                 )
             }
@@ -79,23 +83,91 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context, dbName, null,
         return allBooks
     }
 
-    fun addBooks(title: String, author: String, notes: String, state: String) {
+    fun getCurrentlyReadingBooks(): List<Books> {
+        val db = this.readableDatabase
+        val currentlyReadingBooks = mutableListOf<Books>()
+
+        // get entries from table and put it into the list
+        db.rawQuery("SELECT * FROM $tableName WHERE state = 'Currently Reading'", null).use {
+            while(it.moveToNext()){
+                currentlyReadingBooks.add(
+                    Books(
+                        id = it.getInt(it.getColumnIndex(DataConfig.idColumnName) as Int),
+                        title = it.getString(it.getColumnIndex(DataConfig.title) as Int),
+                        author = it.getString(it.getColumnIndex(DataConfig.author) as Int),
+                        notes = it.getString(it.getColumnIndex(DataConfig.notes) as Int),
+                        state = it.getString(it.getColumnIndex(DataConfig.state) as Int),
+                        rating = it.getInt(it.getColumnIndex(DataConfig.rating) as Int)
+                    )
+                )
+            }
+        }
+        return currentlyReadingBooks
+    }
+
+    fun getTBRBooks(): List<Books> {
+        val db = this.readableDatabase
+        val tbrBooks = mutableListOf<Books>()
+
+        // get entries from table and put it into the list
+        db.rawQuery("SELECT * FROM $tableName WHERE state = 'To be read'", null).use {
+            while(it.moveToNext()){
+                tbrBooks.add(
+                    Books(
+                        id = it.getInt(it.getColumnIndex(DataConfig.idColumnName) as Int),
+                        title = it.getString(it.getColumnIndex(DataConfig.title) as Int),
+                        author = it.getString(it.getColumnIndex(DataConfig.author) as Int),
+                        notes = it.getString(it.getColumnIndex(DataConfig.notes) as Int),
+                        state = it.getString(it.getColumnIndex(DataConfig.state) as Int),
+                        rating = it.getInt(it.getColumnIndex(DataConfig.rating) as Int)
+                    )
+                )
+            }
+        }
+        return tbrBooks
+    }
+
+    fun getFinishedBooks(): List<Books> {
+        val db = this.readableDatabase
+        val finishedBooks = mutableListOf<Books>()
+
+        // get entries from table and put it into the list
+        db.rawQuery("SELECT * FROM $tableName WHERE state = 'Finished'", null).use {
+            while(it.moveToNext()){
+                finishedBooks.add(
+                    Books(
+                        id = it.getInt(it.getColumnIndex(DataConfig.idColumnName) as Int),
+                        title = it.getString(it.getColumnIndex(DataConfig.title) as Int),
+                        author = it.getString(it.getColumnIndex(DataConfig.author) as Int),
+                        notes = it.getString(it.getColumnIndex(DataConfig.notes) as Int),
+                        state = it.getString(it.getColumnIndex(DataConfig.state) as Int),
+                        rating = it.getInt(it.getColumnIndex(DataConfig.rating) as Int)
+                    )
+                )
+            }
+        }
+        return finishedBooks
+    }
+
+    fun addBooks(title: String, author: String, notes: String, state: String, rating: Int) {
         val db = this.writableDatabase
         val ctv = ContentValues()
         ctv.put("title", title)
         ctv.put("author", author)
         ctv.put("notes", notes)
         ctv.put("state", state)
+        ctv.put("rating", rating)
         db.insert(tableName, null, ctv)
     }
 
-    fun updateBooks(id: Int, title: String, author: String, notes: String, state: String) {
+    fun updateBooks(id: Int, title: String, author: String, notes: String, state: String, rating: Int) {
         val db = this.writableDatabase
         val ctv = ContentValues()
         ctv.put("title", title)
         ctv.put("author", author)
         ctv.put("notes", notes)
         ctv.put("state", state)
+        ctv.put("rating", rating)
         db.update(
             tableName, ctv, "$idColumnName = ?", arrayOf(id.toString())
         )

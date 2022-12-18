@@ -44,6 +44,8 @@ class EnterNewBook : AppCompatActivity() {
             }
         }
 
+
+
         findViewById<Button>(R.id.saveButton).setOnClickListener() {
             saveBook(it)
         }
@@ -55,8 +57,9 @@ class EnterNewBook : AppCompatActivity() {
         val bookTitleField = findViewById<TextView>(R.id.bookTitle).text.toString()
         val bookAuthorField = findViewById<TextView>(R.id.bookAuthor).text.toString()
         val bookNotesField = findViewById<TextView>(R.id.bookNotes).text.toString()
+        val ratingBar = findViewById<RatingBar>(R.id.rBar).rating.toInt()
 
-        myDb.addBooks(bookTitleField, bookAuthorField, bookNotesField, state)
+        myDb.addBooks(bookTitleField, bookAuthorField, bookNotesField, state, ratingBar)
         startActivity(myIntent)
 
 //        if (TextUtils.isEmpty(bookTitleField)) {

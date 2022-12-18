@@ -6,15 +6,19 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewCacheExtension
 import java.io.Serializable
+import java.util.Collections
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var myDb: DatabaseHandler
     lateinit var bookList: MutableList<Books>
+    lateinit var bookView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +28,9 @@ class MainActivity : AppCompatActivity() {
 
         val btnAdd: Button = findViewById(R.id.btnAdd)
         btnAdd.setOnClickListener { enterNewBook() }
+
+        checkBoxFilter()
+
     }
 
     override fun onResume() {
@@ -31,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
         bookList = myDb.getAllBooks().toMutableList()
 
-        val bookView: RecyclerView = findViewById(R.id.myBookList)
+        bookView = findViewById(R.id.myBookList)
         val linearLayoutManager = LinearLayoutManager(this)
         bookView.layoutManager = linearLayoutManager
         bookView.setHasFixedSize(true)
@@ -48,6 +55,8 @@ class MainActivity : AppCompatActivity() {
                 Toast.LENGTH_LONG
             ).show()
         }
+        checkBoxFilter()
+
     }
 
 
@@ -55,5 +64,27 @@ class MainActivity : AppCompatActivity() {
         val myIntent = Intent(this, EnterNewBook::class.java)
         startActivity(myIntent)
     }
+
+    private fun checkBoxFilter() {
+        val checkCurrentlyReading: CheckBox = findViewById(R.id.checkCurrentlyReading)
+        val checkFinished: CheckBox = findViewById(R.id.checkFinished)
+        val checkTBR: CheckBox = findViewById(R.id.checkTBR)
+
+        checkCurrentlyReading.setOnClickListener() { _, isChecked ->
+                    bookList = myDb.getCurrentlyReadingBooks().toMutableList()
+        }
+
+        checkFinished.setOnClickListener() { _, isChecked ->
+                    bookList = myDb.getFinishedBooks().toMutableList()
+        }
+
+        checkTBR.setOnClickListener() { _, isChecked ->
+                    bookList = myDb.getTBRBooks().toMutableList()
+        }
+    }
+}
+
+private fun CheckBox.setOnClickListener(function: (View, Any?) -> Unit) {
+
 }
 
